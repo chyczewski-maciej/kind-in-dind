@@ -1,6 +1,6 @@
 # Kind in dind
 
-Here's the proof you can run Kubernetes IN Docker in Docker-in-Docker. Just in case you've ever wondered...
+Here's the proof you can run **Kubernetes IN Docker** in **Docker-in-Docker**. Just in case you've ever wondered...
 
 ## Resources
 
