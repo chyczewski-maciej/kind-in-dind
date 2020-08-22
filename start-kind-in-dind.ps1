@@ -27,6 +27,6 @@ docker exec ${container-name} sh -c "kubectl config set-context kind-${cluster-n
 # Create the hello-world app the hello world namespace
 docker exec ${container-name} sh -c "kubectl apply -f ./configs/hello-world.yaml"
 
-# Optional: Install Ambassador to support ingress
-docker exec ${container-name} sh -c "kubectl apply -f https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-crds.yaml"
-docker exec ${container-name} sh -c "kubectl apply -n ambassador -f https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-kind.yaml"
+# Optional: Install Ambassador to support ingress. More information can be found at https://kind.sigs.k8s.io/docs/user/ingress
+docker exec ${container-name} sh -c "kubectl apply -f ./configs/ambassador/ambassador-operator-crds.yaml" # Alternative Source: https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-crds.yaml
+docker exec ${container-name} sh -c "kubectl apply -n ambassador -f ./configs/ambassador/ambassador-operator-kind.yaml" # Alternative source: https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-kind.yaml
