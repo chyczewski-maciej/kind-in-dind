@@ -1,12 +1,11 @@
-${container-name} = "kind-in-dind"
+${container-name} = "kind"
 ${cluster-name}= ${container-name}
 
 # Kill and remove previous ${container-name} container if it exists
 docker container rm ${container-name} --force
 
 # Start docker in docker container
-docker run --privileged --name ${container-name} -d docker:dind
-docker container ls 
+docker run --privileged --name ${container-name} -d -p 80:80 -p 443:443 docker:dind
 
 # Copy required binaries
 docker cp ./bin/kubectl ${container-name}:/bin/kubectl
@@ -22,17 +21,12 @@ sleep 2
 
 # Start the cluster
 docker exec ${container-name} sh -c "kind create cluster --name ${cluster-name} --config ./configs/cluster.yaml"
-docker exec ${container-name} sh -c "kubectl config set-context ${cluster-name}"
+docker exec ${container-name} sh -c "kubectl cluster-info --context kind-${cluster-name}"
+docker exec ${container-name} sh -c "kubectl config set-context kind-${cluster-name}"
 
 # Create the hello-world app the hello world namespace
-docker exec ${container-name} sh -c "kubectl create namespace hello-world"
 docker exec ${container-name} sh -c "kubectl apply -f ./configs/hello-world.yaml"
 
-# Wait a moment to make sure configs are applied
-sleep 2
-
-# Check what pods are created
-docker exec ${container-name} sh -c "kubectl get pods --all-namespaces -o wide"
-
-# Check nodes 
-docker exec ${container-name} sh -c "kubectl get nodes -o wide"
+# Optional: Install Ambassador to support ingress
+docker exec ${container-name} sh -c "kubectl apply -f https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-crds.yaml"
+docker exec ${container-name} sh -c "kubectl apply -n ambassador -f https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-kind.yaml"
