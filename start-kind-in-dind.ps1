@@ -10,7 +10,7 @@ docker run --privileged --name ${container-name} -d -p 80:80 -p 443:443 docker:d
 # Copy required binaries
 docker cp ./bin/kubectl ${container-name}:/bin/kubectl
 docker cp ./bin/kind ${container-name}:/bin/kind
-docker exec ${container-name} sh -c "chmod +x /bin/${container-name}"
+docker exec ${container-name} sh -c "chmod +x /bin/kind"
 docker exec ${container-name} sh -c "chmod +x /bin/kubectl"
 
 # Copy yaml configs
