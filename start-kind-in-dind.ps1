@@ -30,3 +30,9 @@ docker exec ${container-name} sh -c "kubectl apply -f ./configs/hello-world.yaml
 # Optional: Install Ambassador to support ingress. More information can be found at https://kind.sigs.k8s.io/docs/user/ingress
 docker exec ${container-name} sh -c "kubectl apply -f ./configs/ambassador/ambassador-operator-crds.yaml" # Original source: https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-crds.yaml
 docker exec ${container-name} sh -c "kubectl apply -n ambassador -f ./configs/ambassador/ambassador-operator-kind.yaml" # Original source: https://github.com/datawire/ambassador-operator/releases/latest/download/ambassador-operator-kind.yaml
+
+# Optional: Install metrics-server required to run `kubectl top` command
+# Original source: https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+# The original yaml file had to be modified in the following way:
+# metrics-server deployment got an extra command line argument --kubelet-insecure-tls
+docker exec ${container-name} sh -c "kubectl apply -f ./configs/metrics-server.yaml"
