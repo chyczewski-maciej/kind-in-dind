@@ -5,7 +5,7 @@ ${clusterName}= ${containerName}
 docker container rm ${containerName} --force
 
 # Start docker in docker container
-docker run --privileged --name ${containerName} -d -p 80:80 -p 443:443 docker:dind
+docker run --privileged --name ${containerName} -d -p 8080:8080 -p 80:80 -p 443:443 docker:dind
 
 # Copy required binaries
 docker cp ./bin/kubectl ${containerName}:/bin/kubectl
@@ -36,3 +36,6 @@ docker exec ${containerName} sh -c "kubectl apply -n ambassador -f ./configs/amb
 # The original yaml file had to be modified in the following way:
 # metrics-server deployment got an extra command line argument --kubelet-insecure-tls
 docker exec ${containerName} sh -c "kubectl apply -f ./configs/metrics-server.yaml"
+
+# Expose kubernetes api as localhost:8080 on the host machine
+docker exec ${containerName} sh -c "kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='.*'"
