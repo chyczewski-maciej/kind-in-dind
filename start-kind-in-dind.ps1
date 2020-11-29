@@ -42,7 +42,7 @@ docker exec ${containerName} sh -c "kubectl config set-context kind-${clusterNam
 docker exec ${containerName} sh -c "kubectl apply -f ./configs/metrics-server.yaml"
 
 # Optional: Expose kubernetes api as localhost:8080 on the host machine
-# docker exec ${containerName} sh -c "kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='.*' &"
+docker exec ${containerName} sh -c "kubectl proxy --address='0.0.0.0' --port=8080 --accept-hosts='.*' &"
 
 
 # Install helm
@@ -61,9 +61,18 @@ docker exec ${containerName} sh -c "kubectl apply -f ./configs/metrics-server.ya
 # export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
 # export TCP_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="tcp")].nodePort}')
 # export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
-docker cp ./setIstioEnv.sh ${containerName}:/setIstioEnv.sh
-docker exec ${containerName} sh -c "chmod +x /setIstioEnv.sh"
-docker exec ${containerName} sh -c "./setIstioEnv.sh"
+# docker cp ./setIstioEnv.sh ${containerName}:/setIstioEnv.sh
+
+
+# Get istioctl
+docker exec ${containerName} sh -c "curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.8.0 TARGET_ARCH=x86_64 sh -"
+docker exec ${containerName} sh -c "cp ./istio-1.8.0/bin/istioctl /bin/istioctl"
+
+# Install istio
+docker exec ${containerName} sh -c "istioctl install -y"
+# docker exec ${containerName} sh -c "chmod +x /setIstioEnv.sh"
+# docker exec ${containerName} sh -c "./setIstioEnv.sh"
+
 
 
 # Copy yaml configs

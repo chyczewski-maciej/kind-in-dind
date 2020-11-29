@@ -11,7 +11,7 @@ cp ./istio-1.8.0/bin/istioctl /bin/istioctl
 
 # Install istio
 istioctl install -y
-kubectl label namespace default istio-injection=enabled
+# kubectl label namespace default istio-injection=enabled
 
 
 # kubectl apply -f - <<EOF
